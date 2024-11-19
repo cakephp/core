@@ -51,7 +51,7 @@ class PluginCollection implements Iterator, Countable
     /**
      * Names of plugins
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $names = [];
 
