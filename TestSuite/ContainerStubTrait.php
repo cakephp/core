@@ -81,7 +81,7 @@ trait ContainerStubTrait
      */
     protected function createApp(): HttpApplicationInterface|ConsoleApplicationInterface
     {
-        if (class_exists('Cake\Routing\Router')) {
+        if (class_exists(Router::class)) {
             Router::resetRoutes();
         }
 
