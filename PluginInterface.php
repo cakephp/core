@@ -120,7 +120,7 @@ interface PluginInterface
      * @param string $hook The hook to disable
      * @return $this
      */
-    public function disable(string $hook);
+    public function disable(string $hook): static;
 
     /**
      * Enables the named hook
@@ -128,7 +128,7 @@ interface PluginInterface
      * @param string $hook The hook to disable
      * @return $this
      */
-    public function enable(string $hook);
+    public function enable(string $hook): static;
 
     /**
      * Check if the named hook is enabled

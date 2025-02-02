@@ -322,7 +322,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      *
      * @return $this
      */
-    public function reset()
+    public function reset(): static
     {
         foreach (array_keys($this->_loaded) as $name) {
             $this->unload((string)$name);
@@ -342,7 +342,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      * @return $this
      * @psalm-param TObject $object
      */
-    public function set(string $name, object $object)
+    public function set(string $name, object $object): static
     {
         [, $objName] = pluginSplit($name);
 
@@ -366,7 +366,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      * @param string $name The name of the object to remove from the registry.
      * @return $this
      */
-    public function unload(string $name)
+    public function unload(string $name): static
     {
         if (empty($this->_loaded[$name])) {
             [$plugin, $name] = pluginSplit($name);

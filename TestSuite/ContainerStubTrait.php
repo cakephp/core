@@ -123,7 +123,7 @@ trait ContainerStubTrait
      * @param \Closure $factory The factory function for mocked services.
      * @return $this
      */
-    public function mockService(string $class, Closure $factory)
+    public function mockService(string $class, Closure $factory): static
     {
         $this->containerServices[$class] = $factory;
 
@@ -136,7 +136,7 @@ trait ContainerStubTrait
      * @param string $class The class or interface you want to remove.
      * @return $this
      */
-    public function removeMockService(string $class)
+    public function removeMockService(string $class): static
     {
         unset($this->containerServices[$class]);
 
