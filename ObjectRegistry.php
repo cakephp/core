@@ -344,8 +344,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function set(string $name, object $object)
     {
-        [, $objName] = pluginSplit($name);
-
         // Just call unload if the object was loaded before
         if (array_key_exists($name, $this->_loaded)) {
             $this->unload($name);
@@ -353,7 +351,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
         if ($this instanceof EventDispatcherInterface && $object instanceof EventListenerInterface) {
             $this->getEventManager()->on($object);
         }
-        $this->_loaded[$objName] = $object;
+        $this->_loaded[$name] = $object;
 
         return $this;
     }
@@ -368,9 +366,8 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function unload(string $name)
     {
-        if (empty($this->_loaded[$name])) {
-            [$plugin, $name] = pluginSplit($name);
-            $this->_throwMissingClassError($name, $plugin);
+        if (!isset($this->_loaded[$name])) {
+            throw new CakeException(sprintf('Object named `%s` is not loaded.', $name));
         }
 
         $object = $this->_loaded[$name];
