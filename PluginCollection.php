@@ -271,35 +271,28 @@ class PluginCollection implements Iterator, Countable
         $config += ['name' => $name];
         $namespace = str_replace('/', '\\', $name);
 
-        $className = $namespace . '\\' . 'Plugin';
-        // Check for [Vendor/]Foo/Plugin class
-        if (!class_exists($className)) {
-            $pos = strpos($name, '/');
-            if ($pos === false) {
-                $namePart = $name;
-            } else {
-                $namePart = substr($name, $pos + 1);
-            }
-
-            // Check for [Vendor/]Foo/FooPlugin
-            $className = $namespace . '\\' . $namePart . 'Plugin';
-
-            if (!class_exists($className)) {
-                $className = BasePlugin::class;
-                if (empty($config['path'])) {
-                    $config['path'] = $this->findPath($name);
-                }
-
-                deprecationWarning(
-                    '5.3.0',
-                    'Loading plugins without a plugin class is deprecated.'
-                    . " You can create the missing class using `bin/cake bake plugin {$name} --class-only`.",
-                );
-            }
+        $pos = strpos($name, '/');
+        if ($pos === false) {
+            $namePart = $name;
+        } else {
+            $namePart = substr($name, $pos + 1);
         }
 
-        /** @var class-string<\Cake\Core\PluginInterface> $className */
-        return new $className($config);
+        // Check for [Vendor/]Foo/FooPlugin
+        $className = $namespace . '\\' . $namePart . 'Plugin';
+        if (class_exists($className)) {
+            /** @var class-string<\Cake\Core\PluginInterface> $className */
+            return new $className($config);
+        }
+
+        // Check for [Vendor/]Foo/Plugin class
+        $className = $namespace . '\\' . 'Plugin';
+        if (class_exists($className)) {
+            /** @var class-string<\Cake\Core\PluginInterface> $className */
+            return new $className($config);
+        }
+
+        throw new MissingPluginException(['plugin' => $name]);
     }
 
     /**
