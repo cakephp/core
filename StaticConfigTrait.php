@@ -25,7 +25,7 @@ use LogicException;
  * for classes that provide an adapter facade or need to have sets of
  * configuration data registered and manipulated.
  *
- * Implementing objects are expected to declare a static `$_dsnClassMap` property.
+ * Implementing objects are expected to declare a static `$dsnClassMap` property.
  */
 trait StaticConfigTrait
 {
@@ -34,7 +34,7 @@ trait StaticConfigTrait
      *
      * @var array<string|int, array<string, mixed>>
      */
-    protected static array $_config = [];
+    protected static array $config = [];
 
     /**
      * This method can be used to define configuration adapters for an application.
@@ -89,7 +89,7 @@ trait StaticConfigTrait
             throw new LogicException('If config is not null, key must be a string.');
         }
 
-        if (isset(static::$_config[$key])) {
+        if (isset(static::$config[$key])) {
             throw new BadMethodCallException(sprintf('Cannot reconfigure existing key `%s`.', $key));
         }
 
@@ -108,7 +108,7 @@ trait StaticConfigTrait
             unset($config['engine']);
         }
 
-        static::$_config[$key] = $config;
+        static::$config[$key] = $config;
     }
 
     /**
@@ -119,7 +119,7 @@ trait StaticConfigTrait
      */
     public static function getConfig(string $key): mixed
     {
-        return static::$_config[$key] ?? null;
+        return static::$config[$key] ?? null;
     }
 
     /**
@@ -133,11 +133,11 @@ trait StaticConfigTrait
      */
     public static function getConfigOrFail(string $key): mixed
     {
-        if (!isset(static::$_config[$key])) {
+        if (!isset(static::$config[$key])) {
             throw new InvalidArgumentException(sprintf('Expected configuration `%s` not found.', $key));
         }
 
-        return static::$_config[$key];
+        return static::$config[$key];
     }
 
     /**
@@ -154,14 +154,14 @@ trait StaticConfigTrait
      */
     public static function drop(string $config): bool
     {
-        if (!isset(static::$_config[$config])) {
+        if (!isset(static::$config[$config])) {
             return false;
         }
         /** @phpstan-ignore-next-line */
-        if (isset(static::$_registry)) {
-            static::$_registry->unload($config);
+        if (isset(static::$registry)) {
+            static::$registry->unload($config);
         }
-        unset(static::$_config[$config]);
+        unset(static::$config[$config]);
 
         return true;
     }
@@ -173,7 +173,7 @@ trait StaticConfigTrait
      */
     public static function configured(): array
     {
-        $configurations = array_keys(static::$_config);
+        $configurations = array_keys(static::$config);
 
         return array_map(function (int|string $key) {
             return (string)$key;
@@ -318,7 +318,7 @@ REGEXP;
      */
     public static function setDsnClassMap(array $map): void
     {
-        static::$_dsnClassMap = $map + static::$_dsnClassMap;
+        static::$dsnClassMap = $map + static::$dsnClassMap;
     }
 
     /**
@@ -328,6 +328,6 @@ REGEXP;
      */
     public static function getDsnClassMap(): array
     {
-        return static::$_dsnClassMap;
+        return static::$dsnClassMap;
     }
 }
