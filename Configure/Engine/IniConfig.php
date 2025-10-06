@@ -63,14 +63,14 @@ class IniConfig implements ConfigEngineInterface
      *
      * @var string
      */
-    protected string $_extension = '.ini';
+    protected string $extension = '.ini';
 
     /**
      * The section to read, if null all sections will be read.
      *
      * @var string|null
      */
-    protected ?string $_section = null;
+    protected ?string $section = null;
 
     /**
      * Build and construct a new ini file parser. The parser can be used to read
@@ -82,8 +82,8 @@ class IniConfig implements ConfigEngineInterface
      */
     public function __construct(?string $path = null, ?string $section = null)
     {
-        $this->_path = $path ?? CONFIG;
-        $this->_section = $section;
+        $this->path = $path ?? CONFIG;
+        $this->section = $section;
     }
 
     /**
@@ -104,8 +104,8 @@ class IniConfig implements ConfigEngineInterface
             throw new CakeException(sprintf('Cannot parse INI file `%s`', $file));
         }
 
-        if ($this->_section && isset($contents[$this->_section])) {
-            $values = $this->parseNestedValues($contents[$this->_section]);
+        if ($this->section && isset($contents[$this->section])) {
+            $values = $this->parseNestedValues($contents[$this->section]);
         } else {
             $values = [];
             foreach ($contents as $section => $attribs) {

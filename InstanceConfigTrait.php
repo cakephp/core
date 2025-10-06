@@ -23,7 +23,7 @@ use InvalidArgumentException;
 /**
  * A trait for reading and writing instance config
  *
- * Implementing objects are expected to declare a `$_defaultConfig` property.
+ * Implementing objects are expected to declare a `$defaultConfig` property.
  */
 trait InstanceConfigTrait
 {
@@ -32,14 +32,14 @@ trait InstanceConfigTrait
      *
      * @var array<string, mixed>
      */
-    protected array $_config = [];
+    protected array $config = [];
 
     /**
      * Whether the config property has already been configured with defaults
      *
      * @var bool
      */
-    protected bool $_configInitialized = false;
+    protected bool $configInitialized = false;
 
     /**
      * Sets the config.
@@ -72,9 +72,9 @@ trait InstanceConfigTrait
      */
     public function setConfig(array|string $key, mixed $value = null, bool $merge = true): static
     {
-        if (!$this->_configInitialized) {
-            $this->_config = $this->_defaultConfig;
-            $this->_configInitialized = true;
+        if (!$this->configInitialized) {
+            $this->config = $this->defaultConfig;
+            $this->configInitialized = true;
         }
 
         $this->configWrite($key, $value, $merge);
@@ -117,9 +117,9 @@ trait InstanceConfigTrait
      */
     public function getConfig(?string $key = null, mixed $default = null): mixed
     {
-        if (!$this->_configInitialized) {
-            $this->_config = $this->_defaultConfig;
-            $this->_configInitialized = true;
+        if (!$this->configInitialized) {
+            $this->config = $this->defaultConfig;
+            $this->configInitialized = true;
         }
 
         return $this->configRead($key) ?? $default;
@@ -172,9 +172,9 @@ trait InstanceConfigTrait
      */
     public function configShallow(array|string $key, mixed $value = null): static
     {
-        if (!$this->_configInitialized) {
-            $this->_config = $this->_defaultConfig;
-            $this->_configInitialized = true;
+        if (!$this->configInitialized) {
+            $this->config = $this->defaultConfig;
+            $this->configInitialized = true;
         }
 
         $this->configWrite($key, $value, 'shallow');
@@ -191,14 +191,14 @@ trait InstanceConfigTrait
     protected function configRead(?string $key): mixed
     {
         if ($key === null) {
-            return $this->_config;
+            return $this->config;
         }
 
         if (!str_contains($key, '.')) {
-            return $this->_config[$key] ?? null;
+            return $this->config[$key] ?? null;
         }
 
-        $return = $this->_config;
+        $return = $this->config;
 
         foreach (explode('.', $key) as $k) {
             if (!is_array($return) || !isset($return[$k])) {
@@ -233,9 +233,9 @@ trait InstanceConfigTrait
         if ($merge) {
             $update = is_array($key) ? $key : [$key => $value];
             if ($merge === 'shallow') {
-                $this->_config = array_merge($this->_config, Hash::expand($update));
+                $this->config = array_merge($this->config, Hash::expand($update));
             } else {
-                $this->_config = Hash::merge($this->_config, Hash::expand($update));
+                $this->config = Hash::merge($this->config, Hash::expand($update));
             }
 
             return;
@@ -250,12 +250,12 @@ trait InstanceConfigTrait
         }
 
         if (!str_contains($key, '.')) {
-            $this->_config[$key] = $value;
+            $this->config[$key] = $value;
 
             return;
         }
 
-        $update = &$this->_config;
+        $update = &$this->config;
         $stack = explode('.', $key);
 
         foreach ($stack as $k) {
@@ -281,12 +281,12 @@ trait InstanceConfigTrait
     protected function configDelete(string $key): void
     {
         if (!str_contains($key, '.')) {
-            unset($this->_config[$key]);
+            unset($this->config[$key]);
 
             return;
         }
 
-        $update = &$this->_config;
+        $update = &$this->config;
         $stack = explode('.', $key);
         $length = count($stack);
 

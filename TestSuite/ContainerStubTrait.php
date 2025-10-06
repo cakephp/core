@@ -42,14 +42,14 @@ trait ContainerStubTrait
      * @phpstan-var class-string<\Cake\Core\HttpApplicationInterface>|class-string<\Cake\Core\ConsoleApplicationInterface>|null
      * @var string|null
      */
-    protected ?string $_appClass = null;
+    protected ?string $appClass = null;
 
     /**
      * The customized application constructor arguments.
      *
      * @var array|null
      */
-    protected ?array $_appArgs = null;
+    protected ?array $appArgs = null;
 
     /**
      * The collection of container services.
@@ -68,8 +68,8 @@ trait ContainerStubTrait
      */
     public function configApplication(string $class, ?array $constructorArgs): void
     {
-        $this->_appClass = $class;
-        $this->_appArgs = $constructorArgs;
+        $this->appClass = $class;
+        $this->appArgs = $constructorArgs;
     }
 
     /**
@@ -85,8 +85,8 @@ trait ContainerStubTrait
             Router::resetRoutes();
         }
 
-        if ($this->_appClass) {
-            $appClass = $this->_appClass;
+        if ($this->appClass) {
+            $appClass = $this->appClass;
         } else {
             /** @var class-string<\Cake\Http\BaseApplication> $appClass */
             $appClass = Configure::read('App.namespace') . '\Application';
@@ -94,7 +94,7 @@ trait ContainerStubTrait
         if (!class_exists($appClass)) {
             throw new LogicException(sprintf('Cannot load `%s` for use in integration testing.', $appClass));
         }
-        $appArgs = $this->_appArgs ?: [CONFIG];
+        $appArgs = $this->appArgs ?: [CONFIG];
 
         $app = new $appClass(...$appArgs);
         if ($this->containerServices && method_exists($app, 'getEventManager')) {
@@ -183,8 +183,8 @@ trait ContainerStubTrait
     #[After]
     public function cleanupContainer(): void
     {
-        $this->_appArgs = null;
-        $this->_appClass = null;
+        $this->appArgs = null;
+        $this->appClass = null;
         $this->containerServices = [];
     }
 }

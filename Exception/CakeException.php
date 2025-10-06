@@ -28,21 +28,21 @@ class CakeException extends RuntimeException
      *
      * @var array
      */
-    protected array $_attributes = [];
+    protected array $attributes = [];
 
     /**
      * Template string that has attributes sprintf()'ed into it.
      *
      * @var string
      */
-    protected string $_messageTemplate = '';
+    protected string $messageTemplate = '';
 
     /**
      * Default exception code
      *
      * @var int
      */
-    protected int $_defaultCode = 0;
+    protected int $defaultCode = 0;
 
     /**
      * Constructor.
@@ -58,10 +58,10 @@ class CakeException extends RuntimeException
     public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         if (is_array($message)) {
-            $this->_attributes = $message;
-            $message = vsprintf($this->_messageTemplate, $message);
+            $this->attributes = $message;
+            $message = vsprintf($this->messageTemplate, $message);
         }
-        parent::__construct($message, $code ?? $this->_defaultCode, $previous);
+        parent::__construct($message, $code ?? $this->defaultCode, $previous);
     }
 
     /**
@@ -71,6 +71,6 @@ class CakeException extends RuntimeException
      */
     public function getAttributes(): array
     {
-        return $this->_attributes;
+        return $this->attributes;
     }
 }

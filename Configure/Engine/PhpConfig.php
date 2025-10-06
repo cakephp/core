@@ -53,7 +53,7 @@ class PhpConfig implements ConfigEngineInterface
      *
      * @var string
      */
-    protected string $_extension = '.php';
+    protected string $extension = '.php';
 
     /**
      * Constructor for PHP Config file reading.
@@ -62,7 +62,7 @@ class PhpConfig implements ConfigEngineInterface
      */
     public function __construct(?string $path = null)
     {
-        $this->_path = $path ?? CONFIG;
+        $this->path = $path ?? CONFIG;
     }
 
     /**
