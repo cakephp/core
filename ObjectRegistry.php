@@ -50,7 +50,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      * @var array<string, object>
      * @phpstan-var array<string, TObject>
      */
-    protected array $_loaded = [];
+    protected array $loaded = [];
 
     /**
      * Loads/constructs an object instance.
@@ -95,12 +95,12 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
             }
         }
 
-        $loaded = isset($this->_loaded[$objName]);
+        $loaded = isset($this->loaded[$objName]);
         if ($loaded && $config !== []) {
             $this->checkDuplicate($objName, $config);
         }
         if ($loaded) {
-            return $this->_loaded[$objName];
+            return $this->loaded[$objName];
         }
 
         $className = $name;
@@ -113,7 +113,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
         }
 
         $instance = $this->create($className, $objName, $config);
-        $this->_loaded[$objName] = $instance;
+        $this->loaded[$objName] = $instance;
 
         return $instance;
     }
@@ -136,7 +136,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     protected function checkDuplicate(string $name, array $config): void
     {
-        $existing = $this->_loaded[$name];
+        $existing = $this->loaded[$name];
         $msg = sprintf('The `%s` alias has already been loaded.', $name);
         $hasConfig = method_exists($existing, 'getConfig');
         if (!$hasConfig) {
@@ -210,7 +210,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function loaded(): array
     {
-        return array_keys($this->_loaded);
+        return array_keys($this->loaded);
     }
 
     /**
@@ -221,7 +221,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function has(string $name): bool
     {
-        return isset($this->_loaded[$name]);
+        return isset($this->loaded[$name]);
     }
 
     /**
@@ -234,11 +234,11 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function get(string $name): object
     {
-        if (!isset($this->_loaded[$name])) {
+        if (!isset($this->loaded[$name])) {
             throw new CakeException(sprintf('Unknown object `%s`.', $name));
         }
 
-        return $this->_loaded[$name];
+        return $this->loaded[$name];
     }
 
     /**
@@ -250,7 +250,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function __get(string $name): ?object
     {
-        return $this->_loaded[$name] ?? null;
+        return $this->loaded[$name] ?? null;
     }
 
     /**
@@ -324,7 +324,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function reset(): static
     {
-        foreach (array_keys($this->_loaded) as $name) {
+        foreach (array_keys($this->loaded) as $name) {
             $this->unload((string)$name);
         }
 
@@ -345,13 +345,13 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
     public function set(string $name, object $object): static
     {
         // Just call unload if the object was loaded before
-        if (array_key_exists($name, $this->_loaded)) {
+        if (array_key_exists($name, $this->loaded)) {
             $this->unload($name);
         }
         if ($this instanceof EventDispatcherInterface && $object instanceof EventListenerInterface) {
             $this->getEventManager()->on($object);
         }
-        $this->_loaded[$name] = $object;
+        $this->loaded[$name] = $object;
 
         return $this;
     }
@@ -366,15 +366,15 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function unload(string $name): static
     {
-        if (!isset($this->_loaded[$name])) {
+        if (!isset($this->loaded[$name])) {
             throw new CakeException(sprintf('Object named `%s` is not loaded.', $name));
         }
 
-        $object = $this->_loaded[$name];
+        $object = $this->loaded[$name];
         if ($this instanceof EventDispatcherInterface && $object instanceof EventListenerInterface) {
             $this->getEventManager()->off($object);
         }
-        unset($this->_loaded[$name]);
+        unset($this->loaded[$name]);
 
         return $this;
     }
@@ -387,7 +387,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        return new ArrayIterator($this->_loaded);
+        return new ArrayIterator($this->loaded);
     }
 
     /**
@@ -397,7 +397,7 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      */
     public function count(): int
     {
-        return count($this->_loaded);
+        return count($this->loaded);
     }
 
     /**

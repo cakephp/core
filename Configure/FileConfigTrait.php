@@ -30,7 +30,7 @@ trait FileConfigTrait
      *
      * @var string
      */
-    protected string $_path = '';
+    protected string $path = '';
 
     /**
      * Get file path
@@ -53,10 +53,10 @@ trait FileConfigTrait
         if ($plugin) {
             $file = Plugin::configPath($plugin) . $key;
         } else {
-            $file = $this->_path . $key;
+            $file = $this->path . $key;
         }
 
-        $file .= $this->_extension;
+        $file .= $this->extension;
 
         if (!$checkExists || is_file($file)) {
             return $file;
