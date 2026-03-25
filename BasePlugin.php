@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Cake\Core;
 
 use Cake\Console\CommandCollection;
+use Cake\Container\Container as CakeContainer;
 use Cake\Event\EventManagerInterface;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\RouteBuilder;
@@ -306,10 +307,10 @@ class BasePlugin implements PluginInterface
     /**
      * Register container services for this plugin.
      *
-     * @param \Cake\Core\ContainerInterface $container The container to add services to.
+     * @param \Cake\Core\ContainerInterface|\Cake\Container\Container $container The container to add services to.
      * @return void
      */
-    public function services(ContainerInterface $container): void
+    public function services(ContainerInterface|CakeContainer $container): void
     {
     }
 

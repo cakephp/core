@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 namespace Cake\Core\TestSuite;
 
+use Cake\Container\Container as CakeContainer;
 use Cake\Core\Configure;
 use Cake\Core\ConsoleApplicationInterface;
 use Cake\Core\ContainerInterface;
@@ -22,9 +23,9 @@ use Cake\Core\HttpApplicationInterface;
 use Cake\Event\EventInterface;
 use Cake\Routing\Router;
 use Closure;
-use League\Container\Exception\NotFoundException;
 use LogicException;
 use PHPUnit\Framework\Attributes\After;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * A set of methods used for defining container services
@@ -151,11 +152,13 @@ trait ContainerStubTrait
      * container will be set as a delegate to the mock container.
      *
      * @param \Cake\Event\EventInterface $event The event
-     * @param \Cake\Core\ContainerInterface $container The container to wrap.
+     * @param \Cake\Core\ContainerInterface|\Cake\Container\Container $container The container to wrap.
      * @return void
      */
-    public function modifyContainer(EventInterface $event, ContainerInterface $container): void
-    {
+    public function modifyContainer(
+        EventInterface $event,
+        ContainerInterface|CakeContainer $container,
+    ): void {
         if (!$this->containerServices) {
             return;
         }
@@ -163,7 +166,7 @@ trait ContainerStubTrait
             if ($container->has($key)) {
                 try {
                     $container->extend($key)->setConcrete($factory);
-                } catch (NotFoundException) {
+                } catch (NotFoundExceptionInterface) {
                     $container->add($key, $factory);
                 }
             } else {
