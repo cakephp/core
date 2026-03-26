@@ -22,7 +22,7 @@ use Cake\Container\Container as CakeContainer;
  * Factory for creating the appropriate DI container based on configuration.
  *
  * The container selection is controlled by `Configure::read('App.container')`:
- * - 'cake': Uses the built-in CakePHP container (`Cake\Container\Container`)
+ * - 'cake': Uses the built-in CakePHP container (wrapped in CakeContainerBridge)
  * - Any other value or not set: Uses the League container (default, backwards compatible)
  *
  * When using the 'cake' container, applications may need to adjust code that
@@ -34,12 +34,12 @@ class ContainerFactory
     /**
      * Create a new container instance based on configuration.
      *
-     * @return \Cake\Core\ContainerInterface|\Cake\Container\Container
+     * @return \Cake\Core\ContainerInterface
      */
-    public static function create(): ContainerInterface|CakeContainer
+    public static function create(): ContainerInterface
     {
         return match (Configure::read('App.container')) {
-            'cake' => new CakeContainer(),
+            'cake' => new CakeContainerBridge(new CakeContainer()),
             default => new Container(),
         };
     }

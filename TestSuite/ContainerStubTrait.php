@@ -15,7 +15,6 @@ declare(strict_types=1);
  */
 namespace Cake\Core\TestSuite;
 
-use Cake\Container\Container as CakeContainer;
 use Cake\Core\Configure;
 use Cake\Core\ConsoleApplicationInterface;
 use Cake\Core\ContainerInterface;
@@ -152,13 +151,11 @@ trait ContainerStubTrait
      * container will be set as a delegate to the mock container.
      *
      * @param \Cake\Event\EventInterface $event The event
-     * @param \Cake\Core\ContainerInterface|\Cake\Container\Container $container The container to wrap.
+     * @param \Cake\Core\ContainerInterface $container The container to wrap.
      * @return void
      */
-    public function modifyContainer(
-        EventInterface $event,
-        ContainerInterface|CakeContainer $container,
-    ): void {
+    public function modifyContainer(EventInterface $event, ContainerInterface $container): void
+    {
         if (!$this->containerServices) {
             return;
         }
