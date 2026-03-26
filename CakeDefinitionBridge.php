@@ -109,6 +109,14 @@ class CakeDefinitionBridge implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    public function getTags(): array
+    {
+        return $this->definition->getTags();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function hasTag(string $tag): bool
     {
         return $this->definition->hasTag($tag);
